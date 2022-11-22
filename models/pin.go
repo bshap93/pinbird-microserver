@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Pin struct {
 	ID          uint64 `gorm:"primaryKey"`
@@ -33,5 +36,11 @@ func (p Pin) isToRead() bool {
 
 func (p Pin) timeCreated() time.Time {
 	// . "2022-11-21T01:49:01Z"
+	theTime, err := time.Parse(time.RFC3339Nano, p.Time)
+	if err != nil {
+		fmt.Println("Could not parse time:", err)
+		return time.Now()
+	}
+	return theTime
 
 }
