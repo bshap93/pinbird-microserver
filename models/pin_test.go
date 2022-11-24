@@ -12,7 +12,7 @@ func TestTimeCreated(t *testing.T) {
 		Time:        "2022-11-21T01:49:01Z"}
 
 	got := myPin.timeCreated()
-	want := time.Date(2022, 11, 21, 01, 49, 01, 0, time.Local)
+	want := time.Date(2022, 11, 21, 01, 49, 01, 0, time.UTC)
 
 	if got != want {
 		t.Errorf("got %q, wanted %q", got, want)

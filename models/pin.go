@@ -36,6 +36,7 @@ func (p Pin) isToRead() bool {
 
 func (p Pin) timeCreated() time.Time {
 	// . "2022-11-21T01:49:01Z"
+	// parses using RFC3339 + Nanoseconds, in UTC
 	theTime, err := time.Parse(time.RFC3339Nano, p.Time)
 	if err != nil {
 		fmt.Println("Could not parse time:", err)
