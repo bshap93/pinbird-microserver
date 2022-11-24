@@ -1,7 +1,37 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+	"reflect"
+	"runtime"
+
+	"github.com/julienschmidt/httprouter"
+)
+
+type CountHandler struct{}
+
+func count(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "0 pin bookmarks currently stored")
+}
+
+func log(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		name := runtime.FuncForPC(reflect.ValueOf(h).Pointer()).Name()
+		fmt.Println("Handler function called - " + name)
+		h(w, r)
+	}
+}
 
 func main() {
-	fmt.Println("vim-go")
+	mux := httprouter.New()
+	mux.GET("/pins/")
+
+	server := http.Server{
+		Addr: "127.0.0.1:8080",
+	}
+
+	http.HandleFunc("/pins/count", log(count))
+
+	server.ListenAndServe()
 }
