@@ -11,8 +11,12 @@ import (
 
 type CountHandler struct{}
 
-func count(w http.ResponseWriter, r *http.Request) {
+func count(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Fprintf(w, "0 pin bookmarks currently stored")
+}
+
+func singlePin(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Fprintf(w, "presenting pin, %s\n", p.ByName("url"))
 }
 
 func log(h http.HandlerFunc) http.HandlerFunc {
@@ -25,13 +29,15 @@ func log(h http.HandlerFunc) http.HandlerFunc {
 
 func main() {
 	mux := httprouter.New()
-	mux.GET("/pins/")
+
+	mux.GET("/pins/:url", singlePin)
 
 	server := http.Server{
-		Addr: "127.0.0.1:8080",
+		Addr:    "127.0.0.1:8080",
+		Handler: mux,
 	}
 
-	http.HandleFunc("/pins/count", log(count))
+	// http.HandleFunc("/pins/count", log(count))
 
 	server.ListenAndServe()
 }
